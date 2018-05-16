@@ -7,12 +7,13 @@ const port = process.env.PORT || 8888;
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use('/rooms/:roomId', express.static(path.join(__dirname, './public')));
+app.use(express.static(path.join(__dirname, './public')));
 
 const clientBundles = './public/services';
 const serverBundles = './templates/services';
 const serviceConfig = require('./service-config.json');
 const services = require('./loader.js')(clientBundles, serverBundles, serviceConfig);
+console.log('services is: ', services)
 
 const React = require('react');
 const ReactDom = require('react-dom/server');
@@ -31,15 +32,18 @@ const renderComponents = (components, props = {}) => {
   });
 };
 
-app.get('/items/:id', function(req, res) {
-  let components = renderComponents(services, {itemid: req.params.id});
+app.get('/rooms/:id', function(req, res) {
+  console.log('req.params is: ', req.params.id)
+  let components = renderComponents(services, {locationId: req.params.id});
+  console.log('object keys services is:', Object.keys(services));
   res.end(Layout(
     'DreamBnb Proxy',
     App(...components),
-    Scripts(Object.keys(services))
+    Scripts(Object.keys(services), {locationId: +req.params.id})
   ));
 });
 
 app.listen(port, () => {
   console.log(`server running at: http://localhost:${port}`);
 });
+ 
