@@ -7,9 +7,7 @@ const loadBundle = function(cache, item, filename) {
   // add a small delay to ensure pipe has closed
   setTimeout(() => {
     console.log('loading:', filename);
-    // console.log(fs.readFileSync(filename, {encoding: 'utf8'}));
     cache[item] = require(filename).default; 
-    console.log('cache[item] is', require('util').inspect(cache[item], true, 10));  
   }, 0);
 };
 
@@ -18,13 +16,11 @@ const fetchBundles = (path, services, suffix = '', require = false) => {
     const filename = `${path}/${item}${suffix}.js`;
     exists(filename)
       .then(() => {
-        console.log(`the file ${filename} exists and time to load bundle to cache`)
         require ? loadBundle(services, item, filename) : null;
       })
       .catch(err => {
         if (err.code === 'ENOENT') {
           const url = `${services[item]}${suffix}.js`;
-          console.log('oops i could not find file')
           console.log(`Fetching: ${url}`);
           // see: https://www.npmjs.com/package/node-fetch
           fetch(url)

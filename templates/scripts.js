@@ -9,7 +9,6 @@ module.exports = (items, id) => `
 
   <script>
     ${items.map(item => `
-      console.log(${JSON.stringify(id)});
       ReactDOM.hydrate(
         React.createElement(${item}, ${JSON.stringify(id)}),
         document.getElementById('${item}')

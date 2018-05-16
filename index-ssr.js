@@ -13,7 +13,6 @@ const clientBundles = './public/services';
 const serverBundles = './templates/services';
 const serviceConfig = require('./service-config.json');
 const services = require('./loader.js')(clientBundles, serverBundles, serviceConfig);
-console.log('services is: ', services)
 
 const React = require('react');
 const ReactDom = require('react-dom/server');
@@ -33,9 +32,7 @@ const renderComponents = (components, props = {}) => {
 };
 
 app.get('/rooms/:id', function(req, res) {
-  console.log('req.params is: ', req.params.id)
   let components = renderComponents(services, {locationId: req.params.id});
-  console.log('object keys services is:', Object.keys(services));
   res.end(Layout(
     'DreamBnb Proxy',
     App(...components),
